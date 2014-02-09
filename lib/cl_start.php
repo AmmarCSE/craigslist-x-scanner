@@ -1,4 +1,6 @@
 <?php
+	require_once("cl_http.php");
+
 	error_reporting(E_ERROR);
 
 	$GLOBALS['finalDom'] = new DOMDocument();
@@ -6,44 +8,29 @@
 	ini_set('max_execution_time', 1000);
 
 	class CLSTART {
-
-		function CLSTART(){
-		}
-		function run(){
+		 public static function run(){
 			$dom = new DOMDocument;
-			$dom->loadHTMLFile('C:\xampp\htdocs\CLJOB\lib\CL_Cities.html');
+			$dom->loadHTMLFile('C:\xampp\htdocs\craigslist-job-finder\lib\CL_Cities.html');
 			foreach ($dom->getElementsByTagName('a') as $node) {
 				$GLOBALS['currentURL'] = $node->getAttribute('href');
 				$url = $node->getAttribute('href'). "/search/sof?zoomToPosting=&catAbb=sof&query=+&addOne=telecommuting&excats=";
-				$html = $this->cl_get($url);
-				$filtered_elements = $this->cl_filter_elements($html, 'date');
-				$this->cl_filter_elements_by_date($filtered_elements);
+				$html = CLHTTP::cl_get($url);
+				$filtered_elements = self::cl_filter_elements($html, 'date');
+				self::cl_filter_elements_by_date($filtered_elements);
 			}
 			
 				//$url = $dom->getElementsByTagName('a')->item(10)->getAttribute('href'). "/search/sof?zoomToPosting=&catAbb=sof&query=+&addOne=telecommuting&excats=";
 
 	//$GLOBALS['currentURL'] = $dom->getElementsByTagName('a')->item(10)->getAttribute('href');
-				//$html = $this->cl_get($url);
-				//$filtered_elements = $this->cl_filter_elements($html, 'date');
-				//$this->cl_filter_elements_by_date($filtered_elements);
+			//$html = CLHTTP::cl_get($url);
+				//$filtered_elements = self::cl_filter_elements($html, 'date');
+				//self::cl_filter_elements_by_date($filtered_elements);
 
 			echo $GLOBALS['finalDom']->saveHTML();
 		}
 
-		function cl_get($url){
-			$ch = curl_init($url);
 
-			curl_setopt($ch, CURLOPT_HEADER, 0);
-			curl_setopt($ch,CURLOPT_RETURNTRANSFER, true);  
-
-			$html = curl_exec($ch);
-
-			curl_close($ch);
-
-			return $html;
-		}
-
-		function cl_filter_elements($html, $classname){
+	 static function cl_filter_elements($html, $classname){
 			$domfilter = new DOMDocument;
 			$domfilter->loadHTML($html);
 			$xpath = new DOMXPath($domfilter);
@@ -61,10 +48,10 @@
 			return $results;
 		}
 
-		function cl_filter_elements_by_date($filtered_elements){
+	static	function cl_filter_elements_by_date($filtered_elements){
 
 			foreach ($filtered_elements as $node) {
-				$this->cl_append_node($node);
+				self::cl_append_node($node);
 				//$keep = $this->cl_desired_date($node->nodeValue, 7);
 
 				//if ($keep == 1) {
@@ -84,7 +71,7 @@
 			return $desired;
 		}
 
-		function cl_append_node($node){
+		static function cl_append_node($node){
 			$cloned = $node->cloneNode(TRUE);
 			$GLOBALS['finalDom']->appendChild($GLOBALS['finalDom']->importNode($node,TRUE));
 
