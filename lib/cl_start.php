@@ -5,7 +5,7 @@
 
 	$GLOBALS['finalDom'] = new DOMDocument();
 	$GLOBALS['currentURL'] = '';
-	ini_set('max_execution_time', 1000);
+	ini_set('max_execution_time', 10000);
 
 	class CLSTART {
 		 public static function run(){
@@ -13,7 +13,7 @@
 			$dom->loadHTMLFile('C:\xampp\htdocs\craigslist-job-finder\lib\CL_Cities.html');
 			foreach ($dom->getElementsByTagName('a') as $node) {
 				$GLOBALS['currentURL'] = $node->getAttribute('href');
-				$url = $node->getAttribute('href'). "/search/sof?zoomToPosting=&catAbb=sof&query=+&addOne=telecommuting&excats=";
+				$url = $node->getAttribute('href'). "/search/sof?zoomToPosting=&catAbb=sof&query=+&is_telecommuting=telecommuting&excats=";
 				$html = CLHTTP::cl_get($url);
 				$filtered_elements = self::cl_filter_elements($html, 'date');
 				self::cl_filter_elements_by_date($filtered_elements);
