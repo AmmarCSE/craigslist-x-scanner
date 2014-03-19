@@ -1,5 +1,6 @@
 <?php
 	require_once("cl_http.php");
+	require_once("cl_regex_filter.php");
 
 	error_reporting(E_ERROR);
 
@@ -11,22 +12,24 @@
 		 public static function run(){
 			$dom = new DOMDocument;
 			$dom->loadHTMLFile('C:\xampp\htdocs\craigslist-job-finder\lib\CL_Cities.html');
-			foreach ($dom->getElementsByTagName('a') as $node) {
-				$GLOBALS['currentURL'] = $node->getAttribute('href');
-				$url = $node->getAttribute('href'). "/search/sof?zoomToPosting=&catAbb=sof&query=+&is_telecommuting=telecommuting&excats=";
-				$html = CLHTTP::cl_get($url);
-				$filtered_elements = self::cl_filter_elements($html, 'date');
-				self::cl_filter_elements_by_date($filtered_elements);
-			}
-			
-				//$url = $dom->getElementsByTagName('a')->item(10)->getAttribute('href'). "/search/sof?zoomToPosting=&catAbb=sof&query=+&addOne=telecommuting&excats=";
-
-	//$GLOBALS['currentURL'] = $dom->getElementsByTagName('a')->item(10)->getAttribute('href');
-			//$html = CLHTTP::cl_get($url);
+			//foreach ($dom->getElementsByTagName('a') as $node) {
+				//$GLOBALS['currentURL'] = $node->getAttribute('href');
+				//$url = $node->getAttribute('href'). "/search/sof?zoomToPosting=&catAbb=sof&query=+&is_telecommuting=telecommuting&excats=";
+				//$html = CLHTTP::cl_get($url);
 				//$filtered_elements = self::cl_filter_elements($html, 'date');
 				//self::cl_filter_elements_by_date($filtered_elements);
+			//}
+	$clfilter = new CLREGEXFILTER();		
+				$url = $dom->getElementsByTagName('a')->item(130)->getAttribute('href'). "/search/sof?query=+";
 
-			echo $GLOBALS['finalDom']->saveHTML();
+	$GLOBALS['currentURL'] = $dom->getElementsByTagName('a')->item(130)->getAttribute('href');
+			$html = CLHTTP::cl_get($url);
+
+			$clfilter->cl_filter_by_class($html, '');
+				$filtered_elements = self::cl_filter_elements($html, 'date');
+				self::cl_filter_elements_by_date($filtered_elements);
+
+			//echo $GLOBALS['finalDom']->saveHTML();
 		}
 
 
